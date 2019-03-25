@@ -3,6 +3,7 @@ package com.tunestore.action;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.util.Random;
 
 import javax.servlet.http.Cookie;
@@ -45,16 +46,12 @@ public class LoginAction extends Action implements IWithDataSource {
     Connection conn = null;
     try {
       conn = dataSource.getConnection();
-      String sql = "SELECT USERNAME, PASSWORD, BALANCE FROM TUNEUSER"
-        + " WHERE TUNEUSER.USERNAME = '"
-        + login
-        + "' AND PASSWORD = '"
-        + password
-        + "'";
-      System.out.println(sql);
-      Statement stmt = conn.createStatement();
+      PreparedStatement stmt = conn.prepareStatement("SELECT USERNAME, PASSWORD, BALANCE FROM TUNEUSER"
+        + " WHERE TUNEUSER.USERNAME=? AND PASSWORD =?");
+      stmt.setString(1, login);
+      stmt.setString(2, password);
       stmt.setMaxRows(1);
-      ResultSet rs = stmt.executeQuery(sql);
+      ResultSet rs = stmt.executeQuery();
       if (rs.next()) {
         messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("login.successful"));
         request.getSession(true).setAttribute("USERNAME", rs.getString("USERNAME"));
@@ -70,13 +67,10 @@ public class LoginAction extends Action implements IWithDataSource {
           for (int i = 0; i < 50; i++) {
             token.append(chooseFrom.charAt(rnd.nextInt(chooseFrom.length())));
           }
-          sql = "INSERT INTO PERSISTENTLOGIN (TOKEN,TUNEUSER) VALUES ('"
-            + token.toString()
-            + "','"
-            + request.getSession(true).getAttribute("USERNAME")
-            + "')";
-          log.info(sql);
-          stmt.executeUpdate(sql);
+          PreparedStatement stmt2 = conn.prepareStatement("INSERT INTO PERSISTENTLOGIN (TOKEN,TUNEUSER) VALUES (?, ?)");
+          stmt2.setString(1, token.toString());
+          stmt2.setString(2, (String) request.getSession(true).getAttribute("USERNAME"));
+          stmt2.executeUpdate();
           
           // Set the cookie
           Cookie logincookie = new Cookie("persistenttoken",token.toString());
