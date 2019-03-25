@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+  "-//Apache Software Foundation//DTD Tiles Configuration 1.3//EN"
+       "http://struts.apache.org/dtds/tiles-config_1_3.dtd">
+<tiles-definitions>
+  <definition name="mainLayout" path="/WEB-INF/layouts/mainlayout.jsp">
+    <put name="title" value="Tunestore" />
+    <put name="left" value="/left.do" />
+    <put name="body" value="/WEB-INF/tiles/body.jsp" />
+  </definition>
+  
+  <definition name="pages.comments" extends="mainLayout">
+    <put name="title" value="Tunestore::Comments" />
+    <put name="body" value="/WEB-INF/tiles/comments.jsp" />
+  </definition>
+  
+  <definition name="pages.list" extends="mainLayout">
+    <put name="title" value="Tunestore::List" />
+    <put name="body" value="/WEB-INF/tiles/list.jsp" />
+  </definition>
+  
+  <definition name="pages.friends" extends="mainLayout">
+    <put name="title" value="Tunestore::Freinds" />
+    <put name="body" value="/WEB-INF/tiles/friends.jsp" />
+  </definition>
+  
+  <definition name="pages.giftsetup" extends="mainLayout">
+    <put name="title" value="Tunestore::Gift" />
+    <put name="body" value="/WEB-INF/tiles/friendgift.jsp" />
+  </definition>
+  
+  <definition name="pages.password" extends="mainLayout">
+    <put name="title" value="Tunestore::Change Password" />
+    <put name="body" value="/WEB-INF/tiles/password.jsp" />
+  </definition>
+  
+  <definition name="pages.profile" extends="mainLayout">
+    <put name="title" value="Tunestore::Profile" />
+    <put name="body" value="/WEB-INF/tiles/profile.jsp" />
+  </definition>
+  
+  <definition name="pages.registerform" extends="mainLayout">
+    <put name="title" value="Tunestore::Register" />
+    <put name="body" value="/WEB-INF/tiles/registerform.jsp" />
+  </definition>
+</tiles-definitions>

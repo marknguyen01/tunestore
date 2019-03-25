@@ -1,0 +1,50 @@
+@CHARSET "UTF-8";
+input {
+  border: 1px solid #000;
+}
+
+.cd {
+  border: 1px solid #000;
+  width: 125px;
+  padding: 3px;
+  background-color: #ffcc99;
+  margin: 3px;
+  float: left;
+  height: 235px;
+  text-align: center;
+}
+
+.comment {
+  border: 1px solid #000;
+  padding: 3px;
+  background-color: #ccccff;
+  margin: 3px;
+}
+
+.error {
+  font-weight: bold;
+  color: #c00;
+}
+
+.prompt {
+  border-width: 0px;
+  text-align: right;
+  font-weight: bold;
+}
+
+.message {
+  font-size: 108%;
+  font-weight: bold;
+  color: #c00;
+}
+
+.ui {
+  border-width: 0px;
+}
+
+#leftpanel {
+  background-color: #99c;
+  border: 1px solid #000;
+  padding: 3px;
+  height: 100pct;
+}

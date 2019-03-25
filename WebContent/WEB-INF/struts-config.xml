@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC
+  "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN"
+  "http://struts.apache.org/dtds/struts-config_1_3.dtd">
+<struts-config>
+  <form-beans>
+    <form-bean name="addBalanceForm" type="com.tunestore.form.AddBalanceForm" />
+    
+    <form-bean name="cdForm" type="org.apache.struts.action.DynaActionForm">
+      <form-property name="cd" type="java.lang.String" />
+    </form-bean>
+    
+    <form-bean name="commentForm" type="org.apache.struts.action.DynaActionForm">
+      <form-property name="cd" type="java.lang.String" />
+      <form-property name="comment" type="java.lang.String" />
+    </form-bean>
+    
+    <form-bean name="friendForm" type="org.apache.struts.action.DynaActionForm">
+      <form-property name="friend" type="java.lang.String" />
+    </form-bean>
+    
+    <form-bean name="giveForm" type="org.apache.struts.action.DynaActionForm">
+      <form-property name="friend" type="java.lang.String" />
+      <form-property name="cd" type="java.lang.String" />
+    </form-bean>
+    
+    <form-bean name="loginForm" type="org.apache.struts.action.DynaActionForm">
+      <form-property name="username" type="java.lang.String" />
+      <form-property name="password" type="java.lang.String" />
+      <form-property name="stayLogged" type="java.lang.Boolean" />
+    </form-bean>
+
+    <form-bean name="passwordForm" type="org.apache.struts.action.DynaActionForm">
+      <form-property name="password" type="java.lang.String" />
+      <form-property name="rptpass" type="java.lang.String" />
+    </form-bean>
+    
+    <form-bean name="registerForm" type="org.apache.struts.action.DynaActionForm">
+      <form-property name="username" type="java.lang.String" />
+      <form-property name="password" type="java.lang.String" />
+      <form-property name="rptpass" type="java.lang.String" />
+    </form-bean>
+  </form-beans>
+  
+  <global-forwards>
+    <forward name="index" path="/list.do" />
+  </global-forwards>
+  
+  <action-mappings>
+    <action path="/addbalance"
+      type="org.springframework.web.struts.DelegatingActionProxy"
+      name="addBalanceForm"
+      scope="request">
+      <forward name="success" path="/list.do" />
+    </action>
+    
+    <action path="/addfriend"
+      type="org.springframework.web.struts.DelegatingActionProxy"
+      name="friendForm"
+      scope="request">
+      <forward name="success" path="/friends.do" />
+    </action>
+    
+    <action path="/buy"
+      type="org.springframework.web.struts.DelegatingActionProxy"
+      name="cdForm"
+      scope="request">
+      <forward name="success" path="/list.do" />
+    </action>
+    
+    <action path="/comments"
+      type="org.springframework.web.struts.DelegatingActionProxy"
+      name="cdForm"
+      scope="request">
+      <forward name="success" path="pages.comments" />
+      <forward name="ajax" path="/WEB-INF/tiles/_commentblock.jsp" />
+    </action>
+    
+    <action path="/download"
+      type="com.tunestore.action.DownloadAction"
+      name="cdForm"
+      scope="request">
+      <forward name="error" path="/list.do" />
+    </action>
+    
+    <action path="/friends"
+      type="org.springframework.web.struts.DelegatingActionProxy">
+      <forward name="success" path="pages.friends" />
+    </action>
+    
+    <action path="/giftsetup"
+      type="org.springframework.web.struts.DelegatingActionProxy"
+      name="cdForm"
+      scope="request">
+      <forward name="success" path="pages.giftsetup" />
+    </action>
+    
+    <action path="/give"
+      type="org.springframework.web.struts.DelegatingActionProxy"
+      name="giveForm"
+      scope="request">
+      <forward name="success" path="/giftsetup.do" />
+    </action>
+    
+    <action path="/leaveComment"
+      type="org.springframework.web.struts.DelegatingActionProxy"
+      name="commentForm"
+      scope="request">
+      <forward name="success" path="/comments.do" />
+    </action>
+    
+    <action path="/left"
+      type="org.springframework.web.struts.DelegatingActionProxy">
+      <forward name="logged" path="/WEB-INF/tiles/leftlogged.jsp" />
+      <forward name="anonymous" path="/WEB-INF/tiles/leftanon.jsp" />
+    </action>
+    
+    <action path="/list" type="com.tunestore.action.ListAction">
+      <forward name="success" path="pages.list" />
+    </action>
+    
+    <action path="/login"
+      type="org.springframework.web.struts.DelegatingActionProxy"
+      name="loginForm"
+      scope="request">
+    </action>
+
+    <action path="/logout"
+			type="org.springframework.web.struts.DelegatingActionProxy" />
+    
+    <action path="/password"
+      type="org.springframework.web.struts.DelegatingActionProxy"
+      name="passwordForm"
+      scope="request">
+      <forward name="success" path="/profile.do" />
+    </action>
+    
+    <action path="/profile"
+      type="org.apache.struts.actions.ForwardAction"
+      parameter="pages.profile" />
+    
+    <action path="/register"
+      type="org.springframework.web.struts.DelegatingActionProxy"
+      name="registerForm"
+      scope="request"
+      input="/registerform.do">
+      <forward name="success" path="/list.do" />
+    </action>
+    
+    <action path="/registerform"
+      type="org.apache.struts.actions.ForwardAction"
+      parameter="pages.registerform" />
+  
+    <action path="/viewcds"
+      type="com.tunestore.action.ViewCDsAction">
+      <forward name="success" path="pages.list" />
+    </action>
+  </action-mappings>
+
+  <message-resources parameter="MessageResources" />
+  
+  <plug-in className="org.apache.struts.tiles.TilesPlugin">
+    <set-property
+      property="definitions-config"
+      value="/WEB-INF/tiles-defs.xml" />
+  </plug-in>
+  
+<!-- 
+  <plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+    <set-property
+      property="pathnames"
+      value="/org/apache/struts/validator/validator-rules.xml,/WEB-INF/validation.xml" />
+  </plug-in>
+-->
+</struts-config>

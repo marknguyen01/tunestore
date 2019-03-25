@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+  <bean id="propertyConfigurer"
+    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/>
+  
+  <bean id="myDataSource"
+    class="org.apache.commons.dbcp.BasicDataSource"
+    destroy-method="close">
+    <property name="driverClassName" value="org.apache.derby.jdbc.ClientDriver" />
+    <property name="url" value="${jdbc.tunestore.url}" />
+  </bean>
+  
+  <bean name="/addbalance"
+    class="com.tunestore.action.AddBalanceAction">
+    <property name="dataSource">
+      <ref bean="myDataSource" />
+    </property>
+  </bean>
+  
+  <bean name="/addfriend"
+    class="com.tunestore.action.AddFriendAction">
+    <property name="dataSource">
+      <ref bean="myDataSource" />
+    </property>
+  </bean>
+  
+  <bean name="/buy"
+    class="com.tunestore.action.BuyAction">
+    <property name="dataSource">
+      <ref bean="myDataSource" />
+    </property>
+  </bean>
+  
+  <bean name="/comments"
+    class="com.tunestore.action.CommentsAction">
+    <property name="dataSource">
+      <ref bean="myDataSource" />
+    </property>
+  </bean>
+  
+  <bean name="/friends"
+    class="com.tunestore.action.FriendsAction">
+    <property name="dataSource">
+      <ref bean="myDataSource" />
+    </property>
+  </bean>
+  
+  <bean name="/giftsetup"
+    class="com.tunestore.action.GiftSetupAction">
+    <property name="dataSource">
+      <ref bean="myDataSource" />
+    </property>
+  </bean>
+  
+  <bean name="/give"
+    class="com.tunestore.action.GiveAction">
+    <property name="dataSource">
+      <ref bean="myDataSource" />
+    </property>
+  </bean>
+  
+  <bean name="/leaveComment"
+    class="com.tunestore.action.LeaveCommentAction">
+    <property name="dataSource">
+      <ref bean="myDataSource" />
+    </property>
+  </bean>
+  
+  <bean name="/left"
+    class="com.tunestore.action.LeftAction">
+    <property name="dataSource">
+      <ref bean="myDataSource" />
+    </property>
+  </bean>
+  
+  <bean name="/login"
+    class="com.tunestore.action.LoginAction">
+    <property name="dataSource">
+      <ref bean="myDataSource" />
+    </property>
+  </bean>
+
+  <bean name="/logout"
+    class="com.tunestore.action.LogoutAction">
+    <property name="dataSource">
+      <ref bean="myDataSource" />
+    </property>
+  </bean>
+
+  <bean name="/password"
+    class="com.tunestore.action.PasswordAction">
+    <property name="dataSource">
+      <ref bean="myDataSource" />
+    </property>
+  </bean>
+  
+  <bean name="/register"
+    class="com.tunestore.action.RegisterAction">
+    <property name="dataSource">
+      <ref bean="myDataSource" />
+    </property>
+  </bean>
+</beans>
