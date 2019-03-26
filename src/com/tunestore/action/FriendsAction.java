@@ -37,6 +37,9 @@ public class FriendsAction extends Action implements IWithDataSource {
     ActionMessages errors = getErrors(request);
     ActionMessages messages = getMessages(request);
     
+    // Click jacking prevention
+    response.addHeader("x-frame-options", "DENY");
+    
     Connection conn = null;
     // Use token for the form
     String sessionToken = String.valueOf(request.getSession(true).getAttribute("TOKEN"));
@@ -89,4 +92,5 @@ public class FriendsAction extends Action implements IWithDataSource {
     saveErrors(request, errors);
     return retval;
   }
+
 }
