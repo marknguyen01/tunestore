@@ -1,9 +1,11 @@
 package com.tunestore.action;
 
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
@@ -38,59 +40,76 @@ public class AddFriendAction extends Action implements IWithDataSource {
     
     Connection conn = null;
     
-    try {
-      conn = dataSource.getConnection();
-      Statement stmt = conn.createStatement();
-      
-      ResultSet rs = stmt.executeQuery("SELECT COUNT(*) "
-          + "FROM FRIENDSHIP "
-          + "WHERE TUNEUSER1 = '"
-          + daf.getString("friend")
-          + "' AND TUNEUSER2 = '"
-          + request.getSession(true).getAttribute("USERNAME")
-          + "'");
-      rs.next();
-      // If they already tried to add me, we both approve theirs and
-      // set this one pre-approved
-      String sql;
-      if (rs.getInt(1) > 0) {
-        stmt.executeUpdate("UPDATE FRIENDSHIP SET APPROVED = 'Y' "
-            + "WHERE TUNEUSER1 = '"
-            + daf.getString("friend")
-            + "' AND TUNEUSER2 = '"
-            + request.getSession(true).getAttribute("USERNAME")
-            + "'");
-        sql = "INSERT INTO FRIENDSHIP VALUES ('"
-          + request.getSession(true).getAttribute("USERNAME")
-          + "','"
-          + daf.getString("friend")
-          + "','Y')";
-      } else {
-        sql = "INSERT INTO FRIENDSHIP VALUES ('"
-          + request.getSession(true).getAttribute("USERNAME")
-          + "','"
-          + daf.getString("friend")
-          + "','N')";
-      }
-      // We expect this part can fail if you add a friend you've already got
-      try {
-        stmt.executeUpdate(sql);
-        messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("friend.added", daf.getString("friend")));
-      } catch (Exception e) {
-        errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("friend.duplicate"));
-        e.printStackTrace();
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw e;
-    } finally {
-      if (conn != null) {
-        try { conn.close(); } catch (Exception e) {}
-      }
-    }
     
-    saveMessages(request, messages);
-    saveErrors(request, errors);
-    return mapping.findForward("success");
+    // Check if the token is valid
+    String token = String.valueOf(request.getParameter("csrfToken"));
+    String sessionToken = String.valueOf(request.getSession(true).getAttribute("TOKEN"));
+    
+    if(token != null && sessionToken != null && token.equals(sessionToken)) {
+        try {
+            conn = dataSource.getConnection();
+            Statement stmt = conn.createStatement();
+            
+            ResultSet rs = stmt.executeQuery("SELECT COUNT(*) "
+                + "FROM FRIENDSHIP "
+                + "WHERE TUNEUSER1 = '"
+                + daf.getString("friend")
+                + "' AND TUNEUSER2 = '"
+                + request.getSession(true).getAttribute("USERNAME")
+                + "'");
+            rs.next();
+            // If they already tried to add me, we both approve theirs and
+            // set this one pre-approved
+            String sql;
+            if (rs.getInt(1) > 0) {
+              stmt.executeUpdate("UPDATE FRIENDSHIP SET APPROVED = 'Y' "
+                  + "WHERE TUNEUSER1 = '"
+                  + daf.getString("friend")
+                  + "' AND TUNEUSER2 = '"
+                  + request.getSession(true).getAttribute("USERNAME")
+                  + "'");
+              sql = "INSERT INTO FRIENDSHIP VALUES ('"
+                + request.getSession(true).getAttribute("USERNAME")
+                + "','"
+                + daf.getString("friend")
+                + "','Y')";
+            } else {
+              sql = "INSERT INTO FRIENDSHIP VALUES ('"
+                + request.getSession(true).getAttribute("USERNAME")
+                + "','"
+                + daf.getString("friend")
+                + "','N')";
+            }
+            // We expect this part can fail if you add a friend you've already got
+            try {
+              stmt.executeUpdate(sql);
+              messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("friend.added", daf.getString("friend")));
+            } catch (Exception e) {
+              errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("friend.duplicate"));
+              e.printStackTrace();
+            }
+          } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+          } finally {
+            if (conn != null) {
+              try { conn.close(); } catch (Exception e) {}
+            }
+          }
+          
+          saveMessages(request, messages);
+          saveErrors(request, errors);
+          
+          // Assign new token
+          SecureRandom rand = new SecureRandom();
+          request.getSession(true).setAttribute("TOKEN", rand.nextInt(1000));
+          
+          
+          return mapping.findForward("success");
+    }
+    else {
+    	throw new ServletException("Invalid token!");
+    }
+
   }
 }

@@ -1,5 +1,6 @@
 package com.tunestore.action;
 
+import java.security.SecureRandom;
 import java.sql.Connection;
 import org.owasp.esapi.ESAPI;
 import java.sql.ResultSet;
@@ -57,6 +58,13 @@ public class LoginAction extends Action implements IWithDataSource {
         request.getSession(true).setAttribute("USERNAME", rs.getString("USERNAME"));
         request.getSession(true).setAttribute("BALANCE", rs.getString("BALANCE"));
         request.setAttribute("msg", "Logged in successfully");
+        
+        // Set crsf token in session once succesfully login
+        SecureRandom rand = new SecureRandom();
+        int csrfToken = rand.nextInt(1000);
+        request.getSession(true).setAttribute("TOKEN", csrfToken);
+        
+        System.out.println("YOUR TOKEN IS: " + csrfToken);
         
         // See if they wanted to stay logged in 
         if (stayLogged.booleanValue()) {

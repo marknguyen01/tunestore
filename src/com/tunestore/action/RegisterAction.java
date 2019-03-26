@@ -65,7 +65,7 @@ public class RegisterAction extends Action implements IWithDataSource {
         PreparedStatement stmt2 = conn.prepareStatement("INSERT INTO TUNEUSER (USERNAME,PASSWORD,BALANCE) VALUES (?, ?, 0.00)");
         stmt2.setString(1, daf.getString("username"));
         stmt2.setString(2, daf.getString("password"));
-        stmt2.executeQuery();
+        stmt2.executeUpdate();
         
         ActionMessages msgs = getMessages(request);
         msgs.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("user.added"));

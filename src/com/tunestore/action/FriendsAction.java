@@ -38,6 +38,11 @@ public class FriendsAction extends Action implements IWithDataSource {
     ActionMessages messages = getMessages(request);
     
     Connection conn = null;
+    // Use token for the form
+    String sessionToken = String.valueOf(request.getSession(true).getAttribute("TOKEN"));
+    System.out.println("YOUR ADD FRIEND TOKEN: " + sessionToken);
+    request.setAttribute("csrfToken", sessionToken);
+    
     
     try {
       conn = dataSource.getConnection();

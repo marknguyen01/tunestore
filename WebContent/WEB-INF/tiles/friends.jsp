@@ -33,5 +33,6 @@ Waiting<br />
 <h2>Add a Friend</h2>
 <html:form action="/addfriend" method="POST">
 Friend name:  <html:text property="friend" /><br />
+<input type="hidden" name="csrfToken" value="${csrfToken}" />
 <html:submit value="Submit" />
 </html:form>
