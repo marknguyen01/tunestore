@@ -1,8 +1,10 @@
 package com.tunestore.action;
 
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
@@ -14,6 +16,7 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.action.DynaActionForm;
+import org.eclipse.jdt.internal.compiler.ast.ThrowStatement;
 
 import com.tunestore.util.DBUtil;
 import com.tunestore.util.IWithDataSource;
@@ -49,20 +52,33 @@ public class PasswordAction extends Action implements IWithDataSource {
     } else {
       Connection conn = null;
       
-      try {
-        conn = dataSource.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("UPDATE TUNEUSER SET PASSWORD = ?"
-            + "WHERE USERNAME = ?");
-        stmt.setString(1, request.getParameter("password"));
-        stmt.setString(2, (String)request.getSession(true).getAttribute("USERNAME"));
-        stmt.executeUpdate();
-        messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("password.changed"));
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      } finally {
-        if (conn != null) {
-          try { conn.close(); } catch (Exception e) {}
+      // Check if the token is valid
+      String token = String.valueOf(request.getParameter("csrfToken"));
+      String sessionToken = String.valueOf(request.getSession(true).getAttribute("TOKEN"));
+      
+      if(token != null && sessionToken != null && token.equals(sessionToken)) {
+          try {
+              conn = dataSource.getConnection();
+              PreparedStatement stmt = conn.prepareStatement("UPDATE TUNEUSER SET PASSWORD = ?"
+                  + "WHERE USERNAME = ?");
+              stmt.setString(1, request.getParameter("password"));
+              stmt.setString(2, (String)request.getSession(true).getAttribute("USERNAME"));
+              stmt.executeUpdate();
+              messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("password.changed"));
+            } catch (Exception e) {
+              throw new RuntimeException(e);
+        } finally {
+            // Assign new token
+	        SecureRandom rand = new SecureRandom();
+	        request.getSession(true).setAttribute("TOKEN", rand.nextInt(1000));
+	        
+          if (conn != null) {
+            try { conn.close(); } catch (Exception e) {}
+          }
         }
+      }
+      else {
+      	throw new ServletException("Invalid token!");
       }
     }
     
