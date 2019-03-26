@@ -1,6 +1,7 @@
 package com.tunestore.action;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -52,21 +53,20 @@ public class RegisterAction extends Action implements IWithDataSource {
     Connection conn = null;
     try {
       conn = dataSource.getConnection();
-      Statement stmt = conn.createStatement();
-      ResultSet rs = stmt.executeQuery("SELECT COUNT(*) USERCNT "
-          + "FROM TUNEUSER "
-          + "WHERE USERNAME = '"
-          + daf.getString("username")
-          + "'");
+      PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) USERCNT "
+              + "FROM TUNEUSER "
+              + "WHERE USERNAME=?");
+      stmt.setString(1, daf.getString("username"));
+      ResultSet rs = stmt.executeQuery();
       rs.next();
       if (rs.getInt("USERCNT") > 0) {
         errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.user.exists"));
       } else if (errors.isEmpty()) {
-        stmt.executeUpdate("INSERT INTO TUNEUSER (USERNAME,PASSWORD,BALANCE) VALUES ('"
-            + daf.getString("username")
-            + "','"
-            + daf.getString("password")
-            + "',0.00)");
+        PreparedStatement stmt2 = conn.prepareStatement("INSERT INTO TUNEUSER (USERNAME,PASSWORD,BALANCE) VALUES (?, ?, 0.00)");
+        stmt2.setString(1, daf.getString("username"));
+        stmt2.setString(2, daf.getString("password"));
+        stmt2.executeQuery();
+        
         ActionMessages msgs = getMessages(request);
         msgs.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("user.added"));
         forward = mapping.findForward("success");
