@@ -1,8 +1,8 @@
 package com.tunestore.action;
 
 import java.sql.Connection;
+import org.owasp.esapi.ESAPI;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.util.Random;
 
@@ -36,7 +36,7 @@ public class LoginAction extends Action implements IWithDataSource {
       HttpServletRequest request, HttpServletResponse response)
       throws Exception {
     DynaActionForm df = (DynaActionForm)form;
-    String login = (String)df.get("username");
+    String login = ESAPI.encoder().encodeForHTML((String)df.get("username"));
     String password = (String)df.get("password");
     System.out.println(password);
     Boolean stayLogged = df.get("stayLogged") == null ? new Boolean(false) : (Boolean)df.get("stayLogged");
