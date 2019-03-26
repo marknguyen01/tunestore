@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +18,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.action.DynaActionForm;
+import org.owasp.esapi.ESAPI;
 
 import com.tunestore.beans.CD;
 import com.tunestore.beans.Comment;
@@ -53,7 +53,7 @@ public class CommentsAction extends Action implements IWithDataSource {
       while (rs.next()) {
         Comment comment = new Comment();
         comment.setLeftby(rs.getString(1));
-        comment.setComment(rs.getString(2));
+        comment.setComment(ESAPI.encoder().encodeForHTML(rs.getString(2)));
         comments.add(comment);
       }
       request.setAttribute("comments", comments);
