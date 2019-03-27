@@ -40,6 +40,8 @@ public class GiftSetupAction extends Action implements IWithDataSource {
     ActionForward retval = mapping.findForward("success");
     
     Connection conn = null;
+    
+    request.setAttribute("crsfToken", request.getSession(true).getAttribute("TOKEN"));
 
     try {
       conn = dataSource.getConnection();

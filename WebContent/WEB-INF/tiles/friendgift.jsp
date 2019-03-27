@@ -32,7 +32,7 @@
 </div>
 <c:if test="${! empty FRIENDS}">
 <c:forEach items="${FRIENDS}" var="friend">
-<c:url value="/give.do" var="url">
+<c:url value="/give.do?crsfToken=${crsfToken}" var="url">
 <c:param name="cd" value="${cd.id}" />
 <c:param name="friend" value="${friend}" />
 </c:url>

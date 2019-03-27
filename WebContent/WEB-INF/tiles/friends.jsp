@@ -6,7 +6,7 @@
 <h2>Friend Requests</h2>
 <c:forEach items="${requests}" var="f">
 <strong>${f.username}</strong><br />
-<c:url var="friendurl" value="/addfriend.do">
+<c:url var="friendurl" value="/addfriend.do?csrfToken=${csrfToken}">
 <c:param name="friend" value="${f.username}" />
 </c:url>
 <a href="${friendurl}">Approve</a><br />
