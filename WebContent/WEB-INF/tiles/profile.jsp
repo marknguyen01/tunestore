@@ -22,5 +22,6 @@ Balance: <fmt:formatNumber currencySymbol="$" type="currency" value="${BALANCE}"
 <html:form action="/password" method="post">
 New Password:  <html:password property="password" size="20" /><br />
 Repeat New Password:  <html:password property="rptpass" size="20" /><br />
+<input type="hidden" name="csrfToken" value="${csrfToken}" />
 <input type="submit" value="Change Password" />
 </html:form>
